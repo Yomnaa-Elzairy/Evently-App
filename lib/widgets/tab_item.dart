@@ -1,15 +1,17 @@
-import 'package:evently_app/models/category.dart';
 import 'package:evently_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class TabItem extends StatelessWidget {
-  Category category;
+
+  String label;
+  IconData icon;
   bool isSelected;
   bool isHome;
   TabItem(
       {super.key,
-      required this.category,
+      required this.label,
+      required this.icon,
       required this.isSelected,
       required this.isHome});
 
@@ -34,7 +36,7 @@ class TabItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(
-            category.icon,
+            icon,
             color: isHome
                 ? isSelected
                     ? AppTheme.primary
@@ -47,7 +49,7 @@ class TabItem extends StatelessWidget {
             width: 5,
           ),
           Text(
-            category.name,
+            label,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: isHome
                       ? isSelected

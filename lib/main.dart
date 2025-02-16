@@ -2,6 +2,7 @@ import 'package:evently_app/Authentication/forgot_password.dart';
 import 'package:evently_app/Authentication/register.dart';
 import 'package:evently_app/Authentication/signin.dart';
 import 'package:evently_app/navbar_view.dart';
+import 'package:evently_app/providers/event_provider.dart';
 import 'package:evently_app/tabs/add_event.dart';
 import 'package:evently_app/tabs/favorite.dart';
 import 'package:evently_app/tabs/home.dart';
@@ -10,6 +11,7 @@ import 'package:evently_app/tabs/profile.dart';
 import 'package:evently_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main()async {
@@ -17,7 +19,9 @@ Future<void> main()async {
 await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 );
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_)=>EventProvider(),
+    child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

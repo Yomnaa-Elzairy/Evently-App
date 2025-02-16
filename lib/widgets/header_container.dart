@@ -1,8 +1,10 @@
 import 'package:evently_app/models/category.dart';
+import 'package:evently_app/providers/event_provider.dart';
 import 'package:evently_app/theme/app_theme.dart';
 import 'package:evently_app/widgets/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class HeaderContainer extends StatefulWidget {
   const HeaderContainer({super.key});
@@ -15,6 +17,7 @@ class _HeaderContainerState extends State<HeaderContainer> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    EventProvider eventProvider = Provider.of<EventProvider>(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       height: MediaQuery.sizeOf(context).height * 0.23,
@@ -84,7 +87,7 @@ class _HeaderContainerState extends State<HeaderContainer> {
             ],
           ),
           DefaultTabController(
-            length: Category.categories.length,
+            length: CategoryModel.categories.length + 1,
             child: TabBar(
                 indicatorColor: Colors.transparent,
                 dividerColor: Colors.transparent,
@@ -94,21 +97,29 @@ class _HeaderContainerState extends State<HeaderContainer> {
                 labelColor: AppTheme.white,
                 onTap: (index) {
                   currentIndex = index;
-                  setState(() {});
+                  eventProvider.changeSelectedCategory(
+                      index == 0 ? null : CategoryModel.categories[index - 1]);
                 },
                 labelStyle: Theme.of(context)
                     .textTheme
                     .titleMedium!
                     .copyWith(color: AppTheme.white),
                 isScrollable: true,
-                tabs: Category.categories
-                    .map((category) => TabItem(
-                          isHome: true,
-                          category: category,
-                          isSelected: currentIndex ==
-                              Category.categories.indexOf(category),
-                        ))
-                    .toList()),
+                tabs: [
+                  TabItem(
+                    isHome: true,
+                    label: "All",
+                    icon: Icons.attach_file_outlined,
+                    isSelected: currentIndex == 0,
+                  ),
+                  ...CategoryModel.categories.map((category) => TabItem(
+                        isHome: true,
+                        label: category.name,
+                        icon: category.icon,
+                        isSelected: currentIndex ==
+                            CategoryModel.categories.indexOf(category) + 1,
+                      ))
+                ]),
           )
         ],
       ),

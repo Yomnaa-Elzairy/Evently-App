@@ -2,8 +2,7 @@ import 'package:evently_app/tabs/add_event.dart';
 import 'package:evently_app/tabs/favorite.dart';
 import 'package:evently_app/tabs/home.dart';
 import 'package:evently_app/tabs/location.dart';
-import 'package:evently_app/tabs/profile.dart';
-import 'package:evently_app/theme/app_theme.dart';
+import 'package:evently_app/tabs/profile.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

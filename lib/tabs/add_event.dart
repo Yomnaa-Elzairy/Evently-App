@@ -1,12 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:evently_app/models/category.dart';
-import 'package:evently_app/models/event.dart';
+import 'package:evently_app/models/event_model.dart';
 import 'package:evently_app/models/firebase_services.dart';
+import 'package:evently_app/providers/event_provider.dart';
+import 'package:evently_app/tabs/home.dart';
 import 'package:evently_app/theme/app_theme.dart';
 import 'package:evently_app/widgets/tab_item.dart';
 import 'package:evently_app/widgets/custom_elevatedbutton.dart';
 import 'package:evently_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddEvent extends StatefulWidget {
   static String widgetName = "add event view";
@@ -20,7 +25,7 @@ class _AddEventState extends State<AddEvent> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   int currentIndex = 0;
-  Category selectedCategory = Category.categories.first;
+  CategoryModel selectedCategory = CategoryModel.categories.first;
   DateTime? selectedDate;
   DateFormat dateFormat = DateFormat("d/M/yyyy");
   TimeOfDay? selectedTime;
@@ -51,7 +56,7 @@ class _AddEventState extends State<AddEvent> {
                   ),
                 ),
                 DefaultTabController(
-                  length: Category.categories.length,
+                  length: CategoryModel.categories.length,
                   child: TabBar(
                       indicatorColor: Colors.transparent,
                       dividerColor: Colors.transparent,
@@ -61,7 +66,8 @@ class _AddEventState extends State<AddEvent> {
                       labelColor: AppTheme.white,
                       onTap: (index) {
                         currentIndex = index;
-                        selectedCategory = Category.categories[currentIndex];
+                        selectedCategory =
+                            CategoryModel.categories[currentIndex];
                         setState(() {});
                       },
                       labelStyle: Theme.of(context)
@@ -69,12 +75,13 @@ class _AddEventState extends State<AddEvent> {
                           .titleMedium!
                           .copyWith(color: AppTheme.white),
                       isScrollable: true,
-                      tabs: Category.categories
+                      tabs: CategoryModel.categories
                           .map((category) => TabItem(
                                 isHome: false,
-                                category: category,
+                                label: category.name,
+                                icon: category.icon,
                                 isSelected: currentIndex ==
-                                    Category.categories.indexOf(category),
+                                    CategoryModel.categories.indexOf(category),
                               ))
                           .toList()),
                 ),
@@ -204,13 +211,19 @@ class _AddEventState extends State<AddEvent> {
         selectedTime != null) {
       DateTime dateTime = DateTime(selectedDate!.year, selectedDate!.month,
           selectedDate!.day, selectedTime!.hour, selectedTime!.minute);
-      Event event = Event(
+      EventModel event = EventModel(
         category: selectedCategory,
         title: titleController.text,
         description: descriptionController.text,
         dateTime: dateTime,
       );
-      FirebaseServices.addEventToFirestore(event);
+      FirebaseServices.addEventToFirestore(event).then((_) {
+        Provider.of<EventProvider>(context, listen: false).getEvents();
+        Navigator.of(context).pop();
+      }).catchError((_) {
+        // ignore: avoid_print
+        print("Something went wrogn");
+      });
     }
   }
 }

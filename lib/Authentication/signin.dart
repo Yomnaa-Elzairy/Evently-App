@@ -2,13 +2,16 @@
 
 import 'package:evently_app/Authentication/forgot_password.dart';
 import 'package:evently_app/Authentication/register.dart';
+import 'package:evently_app/models/event_model.dart';
 import 'package:evently_app/models/firebase_services.dart';
 import 'package:evently_app/navbar_view.dart';
+import 'package:evently_app/providers/event_provider.dart';
 import 'package:evently_app/theme/app_theme.dart';
 import 'package:evently_app/widgets/custom_elevatedbutton.dart';
 import 'package:evently_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class SigninView extends StatefulWidget {
   static String widgetName = "sign in";
@@ -48,7 +51,7 @@ class _SigninViewState extends State<SigninView> {
                   ),
                   CustomTextfield(
                     controller: emailController,
-                    prefix: Icon(Icons.email,color: Color(0xff7B7B7B)),
+                    prefix: Icon(Icons.email, color: Color(0xff7B7B7B)),
                     hintText: "Email",
                     isPassword: false,
                   ),
@@ -57,7 +60,7 @@ class _SigninViewState extends State<SigninView> {
                   ),
                   CustomTextfield(
                     controller: passwordController,
-                    prefix: Icon(Icons.lock,color: Color(0xff7B7B7B)),
+                    prefix: Icon(Icons.lock, color: Color(0xff7B7B7B)),
                     hintText: "Password",
                     isPassword: true,
                   ),
@@ -92,6 +95,8 @@ class _SigninViewState extends State<SigninView> {
                         );
                       }
                       if (success) {
+                        Provider.of<EventProvider>(context,listen: false)
+                            .changeSelectedCategory(null);
                         Navigator.pushReplacementNamed(
                             context, NavBarView.widgetName);
                       } else {

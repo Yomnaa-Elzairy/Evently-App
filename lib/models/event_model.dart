@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evently_app/models/category.dart';
 
-class Event {
-   String id;
-   String title;
-   Category category;
-   String description;
-   DateTime dateTime;
+class EventModel {
+  String id;
+  String title;
+  CategoryModel category;
+  String description;
+  DateTime dateTime;
 
-  Event({
+  EventModel({
     this.id = "",
     required this.title,
     required this.category,
     required this.description,
     required this.dateTime,
   });
-  Event.fromJson(Map<String, dynamic> json)
+  EventModel.fromJson(Map<String, dynamic> json)
       : this(
             id: json["id"],
-            category: Category.categories
+            category: CategoryModel.categories
                 .firstWhere((category) => category.id == json["categoryId"]),
             title: json["title"],
             description: json["description"],
